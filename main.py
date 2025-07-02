@@ -1,10 +1,13 @@
 import asyncio
+import re  
+import os
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.state import State, StatesGroup
 from aiogram import Router
-import re
+from aiogram.enums import ParseMode
 
 TOKEN = '8117709260:AAGscZ7bD-IC5qoQNdTiA9cYbB0ZxvWaZ6A'
 ADMIN_ID = 5091334393
@@ -83,8 +86,8 @@ votes_text += "\n".join([f"{point} - {country.strip()}" for point, country in ma
 
 await bot.send_message(chat_id=ADMIN_ID, text=votes_text)
 
-    await message.answer("Спасибо, баллы приняты.")
-    await state.clear()
+await message.answer("Спасибо, баллы приняты.")
+await state.clear()
 
 
 async def main():
