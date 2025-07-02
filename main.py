@@ -7,6 +7,7 @@ from aiogram import Router
 import re
 
 TOKEN = '8117709260:AAGscZ7bD-IC5qoQNdTiA9cYbB0ZxvWaZ6A'
+ADMIN_ID = 5091334393
 
 bot = Bot(TOKEN)
 dp = Dispatcher()
@@ -72,29 +73,15 @@ async def handle_scores(message: types.Message, state: FSMContext):
         unique_duplicates = sorted(set(duplicates))
         await message.answer(f"⚠️ Страны не должны повторяться. Повторы: {', '.join(unique_duplicates)}")
         return
+    
+user_data = await state.get_data()
+jury_country = user_data.get('country', 'Неизвестно')
+user_id = message.from_user.id
 
-    import openpyxl
-    from openpyxl.utils import get_column_letter
-    import os
+votes_text = f"🗳 Новое голосование!\n\nЖюри: {jury_country} (ID: {user_id})\n"
+votes_text += "\n".join([f"{point} - {country.strip()}" for point, country in matches])
 
-    file_name = "votes.xlsx"
-    user_data = await state.get_data()
-    jury_country = user_data.get('country', 'Неизвестно')
-    user_id = message.from_user.id
-
-    if not os.path.exists(file_name):
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = "Votes"
-        ws.append(["Жюри", "User ID", "Баллы"])
-    else:
-        wb = openpyxl.load_workbook(file_name)
-        ws = wb.active
-
-    votes_str = ", ".join([f"{point} - {country.strip()}" for point, country in matches])
-
-    ws.append([jury_country, user_id, votes_str])
-    wb.save(file_name)
+await bot.send_message(chat_id=ADMIN_ID, text=votes_text)
 
     await message.answer("Спасибо, баллы приняты.")
     await state.clear()
