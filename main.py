@@ -39,7 +39,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
         [KeyboardButton(text=country)] for country in countries
     ] + [[KeyboardButton(text="Отмена")]])
     await state.set_state(VotingStates.choosing_country)
-    await message.answer("Жюри какой страны вы представляете?", reply_markup=keyboard)
+    await message.answer("🧑‍🤝‍🧑Жюри какой страны вы представляете?", reply_markup=keyboard)
 
 @router.message(F.text.lower() == "отмена")
 async def cancel_action(message: types.Message, state: FSMContext):
@@ -49,25 +49,25 @@ async def cancel_action(message: types.Message, state: FSMContext):
     ] + [[KeyboardButton(text="Отмена")]])
     await state.set_state(VotingStates.choosing_country)
     await message.answer(
-        "Действие отменено. Выберите страну жюри, чтобы начать заново:",
+        "❌ Действие отменено. Выберите страну жюри, чтобы начать заново:",
         reply_markup=keyboard
     )
 
 @router.message(VotingStates.choosing_country)
 async def handle_country_choice(message: types.Message, state: FSMContext):
     if message.text not in countries:
-        await message.answer("Пожалуйста, выберите страну из списка или нажмите 'Отмена'.")
+        await message.answer("🗳️ Пожалуйста, выберите страну из списка или нажмите 'Отмена'.")
         return
     await state.update_data(country=message.text)
     await state.set_state(VotingStates.entering_name)
-    await message.answer("Кто представит баллы вашей страны?")
+    await message.answer("🎤 Кто представит баллы вашей страны?")
 
 @router.message(VotingStates.entering_name)
 async def handle_name_input(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text)
     await state.set_state(VotingStates.sending_scores)
     await message.answer(
-        "Прекрасно! Теперь отправляйте свои голоса по системе Евровидения (1-8, 10, 12)\n\nФормат:\n12 - Страна\n10 - Страна\n...\n\nЕсли хотите отменить — отправьте 'Отмена'.",
+        "💕 Прекрасно! Теперь отправляйте свои голоса по системе Евровидения (1-8, 10, 12)\n\nФормат:\n12 - Страна\n10 - Страна\n...\n\nЕсли хотите отменить — отправьте 'Отмена'.",
         reply_markup=types.ReplyKeyboardRemove()
     )
 
@@ -120,7 +120,7 @@ async def handle_scores(message: types.Message, state: FSMContext):
 
     await bot.send_message(chat_id=ADMIN_ID, text=f"<code>{formatted}</code>", parse_mode=ParseMode.HTML)
 
-    await message.answer("Спасибо, баллы приняты.")
+    await message.answer("✅ Спасибо, баллы приняты.")
     await state.clear()
 
 # Запуск бота
