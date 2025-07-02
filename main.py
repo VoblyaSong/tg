@@ -86,6 +86,19 @@ async def handle_scores(message: types.Message, state: FSMContext):
 
     await message.answer("Спасибо, баллы приняты.")
     await state.clear()
+    
+from aiohttp import web
+import threading
+
+async def handle(request):
+    return web.Response(text="Bot is alive!")
+
+def run_web():
+    app = web.Application()
+    app.router.add_get("/", handle)
+    web.run_app(app, port=int(os.environ.get("PORT", 8080)))
+
+threading.Thread(target=run_web).start()
 
 async def main():
     await dp.start_polling(bot)
