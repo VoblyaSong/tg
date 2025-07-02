@@ -66,7 +66,6 @@ async def handle_scores(message: types.Message, state: FSMContext):
         countries_voted.append(country.strip().lower())
 
     missing = sorted(expected_points - submitted_points, reverse=True)
-
     if missing:
         await message.answer(f"⚠️ Пожалуйста, отправьте все баллы! Отсутствуют: {', '.join(missing)}")
         return
@@ -76,19 +75,17 @@ async def handle_scores(message: types.Message, state: FSMContext):
         unique_duplicates = sorted(set(duplicates))
         await message.answer(f"⚠️ Страны не должны повторяться. Повторы: {', '.join(unique_duplicates)}")
         return
-    
-user_data = await state.get_data()
-jury_country = user_data.get('country', 'Неизвестно')
-user_id = message.from_user.id
 
-votes_text = f"🗳 Новое голосование!\n\nЖюри: {jury_country} (ID: {user_id})\n"
-votes_text += "\n".join([f"{point} - {country.strip()}" for point, country in matches])
+    user_data = await state.get_data()
+    jury_country = user_data.get('country', 'Неизвестно')
+    user_id = message.from_user.id
 
-await bot.send_message(chat_id=ADMIN_ID, text=votes_text)
+    votes_text = f"🗳 Новое голосование!\n\nЖюри: {jury_country} (ID: {user_id})\n"
+    votes_text += "\n".join([f"{point} - {country.strip()}" for point, country in matches])
+    await bot.send_message(chat_id=ADMIN_ID, text=votes_text)
 
-await message.answer("Спасибо, баллы приняты.")
-await state.clear()
-
+    await message.answer("Спасибо, баллы приняты.")
+    await state.clear()
 
 async def main():
     await dp.start_polling(bot)
