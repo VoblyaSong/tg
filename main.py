@@ -116,7 +116,7 @@ async def handle_scores(message: types.Message, state: FSMContext):
         f'   ["3 points"] = "{points_dict.get("3", "")}",\n'
         f'   ["2 points"] = "{points_dict.get("2", "")}",\n'
         f'   ["1 points"] = "{points_dict.get("1", "")}")n'
-    
+    )
 
     await bot.send_message(chat_id=ADMIN_ID, text=f"<code>{formatted}</code>", parse_mode=ParseMode.HTML)
 
